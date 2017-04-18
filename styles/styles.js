@@ -34,6 +34,37 @@ const styles = StyleSheet.create({
   },
   navigationBar: {
     backgroundColor: '#4397DF',
+  },
+  paymentType: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  paymentItemContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: '#FFFFFF',
+    borderBottomColor: '#AAAAAA',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    padding: 5
+  },
+  paymentItem: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  paymentData: {
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  paymentIcon: {
+    flex: 1,
+    paddingTop: 5,
+    fontSize: 20
+  },
+  paymentItemName: {
+    flex: 9,
+    fontSize: 20,
+    fontWeight: 'bold'
   }
 });
 
