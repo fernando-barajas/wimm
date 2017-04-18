@@ -14,22 +14,16 @@ class PaymentsList extends Component {
 
   constructor(props) {
     super(props)
-    var ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-    this.state = { dataSource: ds.cloneWithRows([]) }
+    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    this.state = { dataSource: ds.cloneWithRows([{type: 'credit-card', name: 'Banamex', amount: '1000', dueDate: '01/05/2017'},
+                                                 {type: 'money', name: 'Telmex', amount: '390', dueDate: '03/05/2017'},
+                                                 {type: 'credit-card', name: 'Bancomer', amount: '1500', dueDate: '15/05/2017'},
+                                                 {type: 'credit-card', name: 'Santander', amount: '600', dueDate: '10/05/2017'}]) };
   }
 
-  _renderHeader() {
-    return (
-      <View style={styles.listHeader}>
-        <Text style={styles.headingText}>
-          My Payments
-        </Text>
-      </View>);
-  }
-  
   _renderRow(rowData) {
     return (
-      <PaymentItem></PaymentItem>
+      <PaymentItem  payment={rowData}></PaymentItem>
     );
   }
   
