@@ -18,9 +18,11 @@
     "babel-jest": "19.0.0",
     "babel-preset-react-native": "1.9.1",
     "jest": "19.0.2",
+    "jest-cli": "^19.0.2",
     "react-test-renderer": "16.0.0-alpha.6"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "setupFiles": ["./jest/setup.js"]
   }
 }

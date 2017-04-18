@@ -2,6 +2,7 @@ import React, { Component, } from 'react'
 import { View, Text, ListView } from 'react-native'
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import PaymentItem from './PaymentItem';
 
 var styles = require('../styles/styles');
 
@@ -28,7 +29,7 @@ class PaymentsList extends Component {
   
   _renderRow(rowData) {
     return (
-      <Text>Waka</Text>
+      <PaymentItem></PaymentItem>
     );
   }
   
@@ -39,7 +40,6 @@ class PaymentsList extends Component {
          style={styles.list}
          dataSource={this.state.dataSource}
          renderRow={this._renderRow}
-         stickyHeaderIndices={[0]}
          enableEmptySections={true} />
         <ActionButton buttonColor='rgba(12, 212, 142, 1)' offsetY={30}>
           <ActionButton.Item buttonColor='rgba(12, 212, 142, 1)' title=''>
