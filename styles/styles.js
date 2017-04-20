@@ -2,69 +2,35 @@ import { StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    flexDirection: 'column',
     bottom: 0,
     left: 0,
     marginTop: 64,
+    paddingLeft: 15,
+    paddingRight: 15,
     position: 'absolute',
     right: 0,
     top: 0
   },
-  list: {
-    backgroundColor: '#FFFFFF',
-  },
-  listHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#EDBF61',
-    padding: 8,
-    elevation: 3,
-    shadowColor: '#DDDDDD',
-    shadowOffset: {height: 5},
-    shadowOpacity: 1
-  },
-  headingText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF'
-  },
   actionButtonIcon: {
     fontSize: 20,
-    height: 22,
+    height: 20,
     color: 'white',
   },
   navigationBar: {
     backgroundColor: '#4397DF',
   },
-  paymentType: {
-    flex: 1,
-    flexDirection: 'row'
-  },
-  paymentItemContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#FFFFFF',
-    borderBottomColor: '#AAAAAA',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    padding: 5
-  },
-  paymentItem: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  paymentData: {
-    fontSize: 20,
+  navBarTitle: {
+    color: 'white',
     fontWeight: 'bold'
   },
-  paymentIcon: {
-    flex: 1,
-    paddingTop: 5,
-    fontSize: 20
-  },
-  paymentItemName: {
-    flex: 9,
-    fontSize: 20,
-    fontWeight: 'bold'
+  totalPayment: {
+    color: '#10879E',
+    fontSize: 21,
+    fontWeight: 'bold',
+    marginTop: 10,
+    textDecorationLine: 'underline'
   }
 });
 
