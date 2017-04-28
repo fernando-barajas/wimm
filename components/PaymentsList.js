@@ -1,24 +1,63 @@
 import React, { Component, } from 'react'
 import { View, Text, ListView } from 'react-native'
-import ActionButton from 'react-native-action-button';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { Actions } from 'react-native-router-flux';
+import SQLite from 'react-native-sqlite-storage';
+import moment from 'moment';
+import accounting from 'accounting'
 import PaymentItem from './PaymentItem';
+import AddPaymentBtn from './AddPaymentBtn';
+
+SQLite.DEBUG(true);
+SQLite.enablePromise(false);
+
+const database_name = "Payments.db";
+const database_version = "1.0";
+const database_displayname = "SQLite Payments Database";
+const database_size = 200000;
+let db, total_payment = 0;
 
 var styles = require('../styles/styles');
 
 class PaymentsList extends Component {
-
   static propTypes = {}
-
   static defaultProps = {}
 
   constructor(props) {
     super(props)
     const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-    this.state = { dataSource: ds.cloneWithRows([{type: 'credit-card', name: 'Banamex', amount: '1000', dueDate: '01/05/2017'},
-                                                 {type: 'money', name: 'Telmex', amount: '390', dueDate: '03/05/2017'},
-                                                 {type: 'credit-card', name: 'Bancomer', amount: '1500', dueDate: '15/05/2017'},
-                                                 {type: 'credit-card', name: 'Santander', amount: '600', dueDate: '10/05/2017'}]) };
+    db = SQLite.openDatabase(database_name, database_version, database_displayname, database_size, this.openCB, this.errorCB);
+    this.state = {
+      dataSource: ds.cloneWithRows([]),
+    };
+  }
+
+  componentDidMount() {
+    db.executeSql('SELECT * FROM payments WHERE created_at BETWEEN "'
+                  + moment().startOf('month').format('YYYY-MM-DD 00:00:00')
+                  + '" AND "'
+                  + moment().endOf('month').format('YYYY-MM-DD 00:00:00')
+                  + '"', [], (results) => {
+      var len = results.rows.length;
+      var rows = [];
+      for (let i = 0; i < len; i++) {
+        let row = results.rows.item(i);
+        rows.push(row);
+        total_payment += row.amount;
+      }
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(rows)
+      });
+    }, this.errorCB)
+
+  }
+
+  errorCB(err) {
+      console.log("error: ", err);
+      return false;
+  }
+
+  openCB() {
+    console.log("Database OPEN");
   }
 
   _renderRow(rowData) {
@@ -26,23 +65,22 @@ class PaymentsList extends Component {
       <PaymentItem  payment={rowData}></PaymentItem>
     );
   }
-  
+
   render() {
     return (
       <View style={styles.container} >
-       <ListView
-         style={styles.list}
-         dataSource={this.state.dataSource}
-         renderRow={this._renderRow}
-         enableEmptySections={true} />
-        <ActionButton buttonColor='rgba(12, 212, 142, 1)' offsetY={30}>
-          <ActionButton.Item buttonColor='rgba(12, 212, 142, 1)' title=''>
-            <Icon name='credit-card' style={styles.actionButtonIcon}/>
-          </ActionButton.Item>
-          <ActionButton.Item buttonColor='rgba(12, 212, 142, 1)' title=''>
-            <Icon name='money' style={styles.actionButtonIcon}/>
-          </ActionButton.Item>
-        </ActionButton>
+        <View style={{height: 490}}>
+         <ListView
+           dataSource={this.state.dataSource}
+           renderRow={this._renderRow}
+           enableEmptySections={true} />
+        </View>
+        <View>
+          <Text style={styles.totalPayment}>
+            Total Payment: {accounting.formatMoney(total_payment)}
+          </Text>
+        </View>
+        <AddPaymentBtn db={db} />
       </View>
     )
   }

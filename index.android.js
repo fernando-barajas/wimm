@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { AppRegistry, Navigator, Text, View } from 'react-native';
 import { Scene, Router } from 'react-native-router-flux';
 import PaymentsList from './components/PaymentsList';
+import PaymentForm from './components/PaymentForm';
 import SQLite from 'react-native-sqlite-storage';
 SQLite.DEBUG(true);
 SQLite.enablePromise(false);
@@ -71,12 +72,12 @@ export default class wimm extends Component {
     console.log("Executing CREATE stmts");
     tx.executeSql('CREATE TABLE IF NOT EXISTS payments( '
       + 'payment_id INTEGER PRIMARY KEY NOT NULL, '
-      + 'payment_type VARCHAR(20), '
-      + 'institution VARCHAR(50), '
-      + 'amount NUMERIC(10,2), '
-      + 'due_date DATE); ', [], this.successCB, this.errorCB);
+      + 'payment_type VARCHAR(20) NOT NULL, '
+      + 'institution VARCHAR(50)  NOT NULL, '
+      + 'amount NUMERIC(10,2) NOT NULL, '
+      + 'due_date DATE NOT NULL, '
+      + 'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ); ', [], this.successCB, this.errorCB);
 
-    console.log("Executing INSERT stmts");
     console.log("all config SQL done");
   }
 
@@ -93,8 +94,9 @@ export default class wimm extends Component {
   render() {
     return (
       <Router>
-        <Scene key='root' navigationBarStyle={styles.navigationBar}>
-          <Scene key='PaymentsList' component={PaymentsList} title='WIMM' initial={true} sceneStyle={styles.scene} />
+        <Scene key='root' navigationBarStyle={styles.navigationBar} titleStyle={styles.navBarTitle}>
+          <Scene key='PaymentsList' component={(props) => <PaymentsList {...props}/>} title='WIMM' initial={true} />
+          <Scene key='PaymentForm' component={PaymentForm} title='WIMM' />
         </Scene>
       </Router>
     );
