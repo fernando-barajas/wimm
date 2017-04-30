@@ -74,10 +74,10 @@ export default class wimm extends Component {
       + 'payment_id INTEGER PRIMARY KEY NOT NULL, '
       + 'payment_type VARCHAR(20) NOT NULL, '
       + 'institution VARCHAR(50)  NOT NULL, '
-      + 'amount NUMERIC(10,2) NOT NULL, '
+      + 'amount NUMERIC(10,2) NOT NULL DEFAULT 0, '
+      + 'pay_out NUMERIC(10,2) NOT NULL DEFAULT 0, '
       + 'due_date DATE NOT NULL, '
       + 'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ); ', [], this.successCB, this.errorCB);
-
     console.log("all config SQL done");
   }
 
@@ -97,6 +97,7 @@ export default class wimm extends Component {
         <Scene key='root' navigationBarStyle={styles.navigationBar} titleStyle={styles.navBarTitle}>
           <Scene key='PaymentsList' component={(props) => <PaymentsList {...props}/>} title='WIMM' initial={true} />
           <Scene key='PaymentForm' component={PaymentForm} title='WIMM' />
+          <Scene key='EditPayment' component={PaymentForm} title='WIMM' />
         </Scene>
       </Router>
     );

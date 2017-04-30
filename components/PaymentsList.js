@@ -30,8 +30,25 @@ class PaymentsList extends Component {
       dataSource: ds.cloneWithRows([]),
     };
   }
-
+  
   componentDidMount() {
+    this._refreshList()
+  }
+  
+  componentWillReceiveProps() {
+    this._refreshList()
+  }
+
+  errorCB(err) {
+      console.log("error: ", err);
+      return false;
+  }
+
+  openCB() {
+    console.log("Database OPEN");
+  }
+  
+  _refreshList() {
     db.executeSql('SELECT * FROM payments WHERE created_at BETWEEN "'
                   + moment().startOf('month').format('YYYY-MM-DD 00:00:00')
                   + '" AND "'
@@ -48,21 +65,11 @@ class PaymentsList extends Component {
         dataSource: this.state.dataSource.cloneWithRows(rows)
       });
     }, this.errorCB)
-
-  }
-
-  errorCB(err) {
-      console.log("error: ", err);
-      return false;
-  }
-
-  openCB() {
-    console.log("Database OPEN");
   }
 
   _renderRow(rowData) {
     return (
-      <PaymentItem  payment={rowData}></PaymentItem>
+      <PaymentItem payment={rowData} db={db} ></PaymentItem>
     );
   }
 
