@@ -18,8 +18,15 @@ const PaymentItemStyle = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
+  paymentAmount: {
+    color: 'red'
+  },
+  payOut: {
+    color: 'blue'
+  },
   paymentData: {
-    fontSize: 20,
+    color: 'black',
+    fontSize: 15,
     fontWeight: 'bold'
   },
   paymentIcon: {
@@ -28,9 +35,15 @@ const PaymentItemStyle = StyleSheet.create({
     fontSize: 20
   },
   paymentItemName: {
+    color: 'black',
     flex: 9,
     fontSize: 20,
     fontWeight: 'bold'
+  },
+  toPay: {
+    borderTopColor: 'black',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    color: 'black'
   }
 });
 
