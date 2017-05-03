@@ -14,7 +14,7 @@ const database_name = "Payments.db";
 const database_version = "1.0";
 const database_displayname = "SQLite Payments Database";
 const database_size = 200000;
-let db, total_payment = 0;
+let db;
 
 var styles = require('../styles/styles');
 
@@ -28,6 +28,8 @@ class PaymentsList extends Component {
     db = SQLite.openDatabase(database_name, database_version, database_displayname, database_size, this.openCB, this.errorCB);
     this.state = {
       dataSource: ds.cloneWithRows([]),
+      totalPayment: 0,
+      payOut: 0
     };
   }
   
@@ -49,6 +51,7 @@ class PaymentsList extends Component {
   }
   
   _refreshList() {
+    let total = 0, payOut = 0;
     db.executeSql('SELECT * FROM payments WHERE created_at BETWEEN "'
                   + moment().startOf('month').format('YYYY-MM-DD 00:00:00')
                   + '" AND "'
@@ -59,10 +62,14 @@ class PaymentsList extends Component {
       for (let i = 0; i < len; i++) {
         let row = results.rows.item(i);
         rows.push(row);
-        total_payment += row.amount;
+        console.log(row.amount);
+        total += row.amount;
+        payOut += row.pay_out;
       }
       this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(rows)
+        dataSource: this.state.dataSource.cloneWithRows(rows),
+        totalPayment: total,
+        payOut: payOut
       });
     }, this.errorCB)
   }
@@ -76,16 +83,22 @@ class PaymentsList extends Component {
   render() {
     return (
       <View style={styles.container} >
-        <View style={{height: 490}}>
+        <View style={styles.paymentStatus}>
+          <Text style={styles.totalPayment}>
+            {accounting.formatMoney(this.state.totalPayment)}
+          </Text>
+          <Text style={styles.payOut}>
+            {accounting.formatMoney(this.state.payOut)}
+          </Text>
+          <Text style={styles.toPay}>
+            {accounting.formatMoney(this.state.totalPayment - this.state.payOut)}
+          </Text>
+        </View>
+        <View style={{height: 500}}>
          <ListView
            dataSource={this.state.dataSource}
            renderRow={this._renderRow}
            enableEmptySections={true} />
-        </View>
-        <View>
-          <Text style={styles.totalPayment}>
-            Total Payment: {accounting.formatMoney(total_payment)}
-          </Text>
         </View>
         <AddPaymentBtn db={db} />
       </View>
