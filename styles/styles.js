@@ -25,12 +25,31 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold'
   },
+  paymentStatus: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'black',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 5,
+    paddingBottom: 10
+  },
   totalPayment: {
-    color: '#10879E',
-    fontSize: 21,
+    color: 'red',
+    fontSize: 17,
     fontWeight: 'bold',
-    marginTop: 10,
-    textDecorationLine: 'underline'
+    height: 20
+  },
+  payOut: {
+    color: 'blue',
+    fontSize: 17,
+    fontWeight: 'bold',
+    height: 20
+  },
+  toPay: {
+    color: 'black',
+    fontSize: 17,
+    fontWeight: 'bold',
+    height: 20
   }
 });
 
