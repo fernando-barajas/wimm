@@ -15,6 +15,7 @@ const database_version = "1.0";
 const database_displayname = "SQLite Payments Database";
 const database_size = 200000;
 let db;
+var PushNotification = require('react-native-push-notification');
 
 var styles = require('../styles/styles');
 
@@ -26,17 +27,21 @@ class PaymentsList extends Component {
     super(props)
     const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     db = SQLite.openDatabase(database_name, database_version, database_displayname, database_size, this.openCB, this.errorCB);
+    PushNotification.configure({
+      onNotification: function(notification) {
+      }
+    });
     this.state = {
       dataSource: ds.cloneWithRows([]),
       totalPayment: 0,
       payOut: 0
     };
   }
-  
+
   componentDidMount() {
     this._refreshList()
   }
-  
+
   componentWillReceiveProps() {
     this._refreshList()
   }
@@ -49,7 +54,7 @@ class PaymentsList extends Component {
   openCB() {
     console.log("Database OPEN");
   }
-  
+
   _refreshList() {
     let total = 0, payOut = 0;
     db.executeSql('SELECT * FROM payments WHERE created_at BETWEEN "'
@@ -62,7 +67,6 @@ class PaymentsList extends Component {
       for (let i = 0; i < len; i++) {
         let row = results.rows.item(i);
         rows.push(row);
-        console.log(row.amount);
         total += row.amount;
         payOut += row.pay_out;
       }
@@ -81,6 +85,11 @@ class PaymentsList extends Component {
   }
 
   render() {
+    let paymentProps = {
+      db: db,
+      PushNotification: PushNotification
+    }
+
     return (
       <View style={styles.container} >
         <View style={styles.paymentStatus}>
@@ -100,7 +109,7 @@ class PaymentsList extends Component {
            renderRow={this._renderRow}
            enableEmptySections={true} />
         </View>
-        <AddPaymentBtn db={db} />
+        <AddPaymentBtn {...paymentProps} />
       </View>
     )
   }
