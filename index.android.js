@@ -91,6 +91,10 @@ export default class wimm extends Component {
     }
   }
 
+  clearDB(tx) {
+    tx.executeSql("DELETE FROM payments WHERE created_at >= '2017-06-01 00:00:00';")
+  }
+
   render() {
     return (
       <Router>

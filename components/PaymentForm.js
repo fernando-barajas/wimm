@@ -65,18 +65,21 @@ class PaymentForm extends Component {
 
   _addPayment() {
     if( this.state.institution !== '' && this.state.amount !== '' && this.state.dueDate !== '') {
-      this.props.db.executeSql('INSERT INTO payments (payment_type, institution, amount, due_date) VALUES ('
+      this.props.db.transaction((tx) => {
+        tx.executeSql('INSERT INTO payments (payment_type, institution, amount, due_date) VALUES ('
                     + '"' + this.props.payment_type + '", '
                     + '"' + this.state.institution + '", '
                     + this.getRawData('paymentAmount')
-                    + ', "' + moment(this.state.dueDate).format('YYYY-MM-DD') + '");', [], () => {
+                    + ', "' + moment(this.state.dueDate).format('YYYY-MM-DD') + '");', [], (tx, result) => {
+                      this._scheduleNotification(result.insertId);
                       Actions.pop({ refresh: {updateList: true}});
-                    }, this.errorCB);
+                    }, this.errorCB)
+      });
     } else {
       this._emptyFieldsAlert()
     }
   }
-  
+
   _editPayment() {
     if( this.state.institution !== '' && this.state.amount !== '' && this.state.dueDate !== '') {
       this.props.db.executeSql('UPDATE payments SET '
@@ -91,7 +94,17 @@ class PaymentForm extends Component {
       this._emptyFieldsAlert()
     }
   }
-  
+
+  _scheduleNotification(paymentId) {
+    let dueDate =  moment(this.state.dueDate).subtract(1, 'day');
+    this.props.PushNotification.localNotificationSchedule({
+      id: paymentId,
+      title: `Due Date Payment:  ${this.state.institution}`,
+      message: `Due Date: ${moment(this.state.dueDate).format('YYYY-MM-DD')}.\nPayment Amount: ${this.refs['paymentAmount'].props.value}`,
+      date: dueDate.toDate()
+    })
+  }
+
   _emptyFieldsAlert() {
       Alert.alert(
       'Payment Error',
@@ -100,12 +113,12 @@ class PaymentForm extends Component {
       { cancelable: false }
     )
   }
-  
+
   errorCB(err) {
       console.log("error: ", err);
       return false;
   }
-  
+
   _renderToPay() {
     return (
       <View>
@@ -119,7 +132,7 @@ class PaymentForm extends Component {
       </View>
     )
   }
-  
+
   getRawData(inputRef) {
     let rawValue = this.refs[inputRef].getRawValue();
     return rawValue;
@@ -142,7 +155,7 @@ class PaymentForm extends Component {
             type={'money'}
             options={{ unit: '$', separator: '.', delimiter: ','}}
             onChangeText={(amount) => this.setState({amount})}/>
-        </View>      
+        </View>
         {this.state.editPayment && this._renderToPay()}
         <View>
           <Text>Due Date</Text>
