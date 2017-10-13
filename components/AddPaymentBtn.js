@@ -11,15 +11,16 @@ class AddPaymentBtn extends Component {
   }
 
   render() {
+    const {navigate} = this.props.navigation;
     return (
       <ActionButton buttonColor='rgba(12, 212, 142, 1)'offsetX={10} offsetY={10}>
         <ActionButton.Item buttonColor='rgba(12, 212, 142, 1)'
-          onPress={() => Actions.PaymentForm({db: this.props.db, payment_type: 'credit-card', PushNotification: this.props.PushNotification })}
+          onPress={() => navigate( 'PaymentForm', {db: this.props.db, payment_type: 'credit-card', PushNotification: this.props.PushNotification })}
           title=''>
           <Icon name='credit-card' style={styles.actionButtonIcon}/>
         </ActionButton.Item>
         <ActionButton.Item buttonColor='rgba(12, 212, 142, 1)'
-          onPress={() => Actions.PaymentForm({db: this.props.db, payment_type: 'money', PushNotification: this.props.PushNotification })}
+          onPress={() => navigate('PaymentForm', {db: this.props.db, payment_type: 'money', PushNotification: this.props.PushNotification })}
           title=''>
           <Icon name='money' style={styles.actionButtonIcon}/>
         </ActionButton.Item>

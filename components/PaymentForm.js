@@ -1,6 +1,5 @@
 import React, { Component, } from 'react'
-import { View, Text, TextInput, Alert, TouchableOpacity } from 'react-native'
-import { Actions } from 'react-native-router-flux';
+import { DeviceEventEmitter, View, Text, TextInput, Alert, TouchableOpacity } from 'react-native'
 import { Icon } from 'react-native-vector-icons/FontAwesome';
 import { TextInputMask } from 'react-native-masked-text';
 import { DatePickerDialog } from 'react-native-datepicker-dialog';
@@ -8,22 +7,29 @@ import moment from 'moment';
 import accounting from 'accounting'
 
 var styles = require('../styles/PaymentFormStyle');
+var db, PushNotification, payment, payment_type;
+
 class PaymentForm extends Component {
-
   static propTypes = {}
-
   static defaultProps = {}
 
   constructor(props) {
     super(props)
-    const editMode = this.props.payment && Object.keys(this.props.payment).length > 0;
+    const {state} = this.props.navigation;
+    payment = state.params.payment;
+    payment_type = state.params.payment_type
+
+    const editMode = payment && Object.keys(payment).length > 0;
+    db = state.params.db;
+    PushNotification = state.params.PushNotification;
+
     this.state = {
       editPayment: editMode,
-      institution: editMode ? this.props.payment.institution : '',
-      amount: editMode ? accounting.formatMoney(this.props.payment.amount) : 0,
-      payOut: editMode ? accounting.formatMoney(this.props.payment.pay_out) : 0,
-      dueDate: editMode ? moment(this.props.payment.due_date).format('YYYY-MM-DD') : null,
-      dueDateText: editMode ? moment(this.props.payment.due_date).format('YYYY-MM-DD') : '',
+      institution: editMode ? state.params.payment.institution : '',
+      amount: editMode ? accounting.formatMoney(state.params.payment.amount) : 0,
+      payOut: editMode ? accounting.formatMoney(state.params.payment.pay_out) : 0,
+      dueDate: editMode ? moment(state.params.payment.due_date).format('YYYY-MM-DD') : null,
+      dueDateText: editMode ? moment(state.params.payment.due_date).format('YYYY-MM-DD') : '',
     };
     this._onSavePress = this._onSavePress.bind(this);
     this._addPayment = this._addPayment.bind(this);
@@ -55,8 +61,9 @@ class PaymentForm extends Component {
     });
   }
 
-  _onCancelPress() {
-    Actions.pop();
+  goBack = () => {
+    this.props.navigation.goBack();
+    DeviceEventEmitter.emit('refreshList', {});
   }
 
   _onSavePress() {
@@ -65,14 +72,14 @@ class PaymentForm extends Component {
 
   _addPayment() {
     if( this.state.institution !== '' && this.state.amount !== '' && this.state.dueDate !== '') {
-      this.props.db.transaction((tx) => {
+      db.transaction((tx) => {
         tx.executeSql('INSERT INTO payments (payment_type, institution, amount, due_date) VALUES ('
-                    + '"' + this.props.payment_type + '", '
+                    + '"' + payment_type + '", '
                     + '"' + this.state.institution + '", '
                     + this.getRawData('paymentAmount')
                     + ', "' + moment(this.state.dueDate).format('YYYY-MM-DD') + '");', [], (tx, result) => {
                       this._scheduleNotification(result.insertId);
-                      Actions.pop({ refresh: {updateList: true}});
+                      this.goBack();
                     }, this.errorCB)
       });
     } else {
@@ -82,13 +89,13 @@ class PaymentForm extends Component {
 
   _editPayment() {
     if( this.state.institution !== '' && this.state.amount !== '' && this.state.dueDate !== '') {
-      this.props.db.executeSql('UPDATE payments SET '
+      db.executeSql('UPDATE payments SET '
                     + 'institution = "' + this.state.institution + '", '
                     + 'amount = ' + this.getRawData('paymentAmount') + ', '
                     + 'pay_out = ' + this.getRawData('payOut') + ', '
                     + 'due_date ="' + moment(this.state.dueDate).format('YYYY-MM-DD') + '"'
-                    + ' WHERE payment_id = ' + this.props.payment.payment_id + ';', [], () => {
-                      Actions.pop({ refresh: {updateList: true}});
+                    + ' WHERE payment_id = ' + payment.payment_id + ';', [], () => {
+                      this.goBack();
                     }, this.errorCB);
     } else {
       this._emptyFieldsAlert()
@@ -97,7 +104,7 @@ class PaymentForm extends Component {
 
   _scheduleNotification(paymentId) {
     let dueDate =  moment(this.state.dueDate).subtract(1, 'day');
-    this.props.PushNotification.localNotificationSchedule({
+    PushNotification.localNotificationSchedule({
       id: paymentId,
       title: `Due Date Payment:  ${this.state.institution}`,
       message: `Due Date: ${moment(this.state.dueDate).format('YYYY-MM-DD')}.\nPayment Amount: ${this.refs['paymentAmount'].props.value}`,
@@ -167,7 +174,7 @@ class PaymentForm extends Component {
         </View>
         <View style={styles.actions}>
           <TouchableOpacity
-            onPress={this._onCancelPress}>
+            onPress={() => this.goBack()}>
             <Text  style={styles.actionBtn}>Cancel</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._onSavePress}>

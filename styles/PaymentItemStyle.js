@@ -7,43 +7,83 @@ const PaymentItemStyle = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomColor: '#AAAAAA',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    padding: 5
-  },
-  paymentType: {
-    flex: 1,
-    flexDirection: 'row'
+    paddingBottom: 10,
+    paddingLeft: 5,
+    paddingRight: 5,
+    paddingTop: 10
   },
   paymentItem: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
-  paymentAmount: {
-    color: 'red'
+  paymentInfoRight: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start'
   },
-  payOut: {
-    color: 'blue'
-  },
-  paymentData: {
-    color: 'black',
-    fontSize: 15,
-    fontWeight: 'bold'
+  paymentInfoLeft: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
   },
   paymentIcon: {
-    flex: 1,
-    paddingTop: 5,
-    fontSize: 20
+    fontSize: 26,
+    padding: 5,
+    width: 42
   },
   paymentItemName: {
     color: 'black',
-    flex: 9,
-    fontSize: 20,
-    fontWeight: 'bold'
+    fontSize: 14,
+    fontWeight: 'bold',
+    padding: 5,
+    width: 80
+  },
+  paymentAmount: {
+    color: '#F42F5A',
+    fontSize: 14,
+    fontWeight: 'bold',
+    padding: 5,
+    textAlign: 'right',
+    width: 80
+  },
+  payOut: {
+    color: '#6296EF',
+    fontSize: 14,
+    fontWeight: 'bold',
+    padding: 5,
+    textAlign: 'right',
+    width: 80
   },
   toPay: {
-    borderTopColor: 'black',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    color: 'black'
+    color: '#8B969C',
+    fontSize: 15,
+    fontWeight: 'bold',
+    padding: 5,
+    textAlign: 'right',
+    width: 80
+  },
+  dueDate: {
+    color: '#6195ED',
+    fontSize: 14,
+    fontWeight: 'bold',
+    padding: 5,
+    textAlign: 'right',
+    width: 60
+  },
+  actionButtonsEdit: {
+    backgroundColor: '#27C484',
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  actionButtonsDelete: {
+    backgroundColor: '#F2372C',
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  actionButtonsIcon: {
+    color: 'white',
+    fontSize: 26,
+    marginLeft: 24
   }
 });
 
