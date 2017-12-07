@@ -1,5 +1,5 @@
 import React, { Component, } from 'react'
-import { View, Text, ListView } from 'react-native'
+import { DeviceEventEmitter, View, Text, TouchableHighlight, ListView } from 'react-native'
 import { Actions } from 'react-native-router-flux';
 import SQLite from 'react-native-sqlite-storage';
 import moment from 'moment';
@@ -26,23 +26,36 @@ class PaymentsList extends Component {
   constructor(props) {
     super(props)
     const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-    db = SQLite.openDatabase(database_name, database_version, database_displayname, database_size, this.openCB, this.errorCB);
+
+    db = SQLite.openDatabase(database_name,
+      database_version,
+      database_displayname,
+      database_size,
+      this.openCB,
+      this.errorCB);
+
     PushNotification.configure({
       onNotification: function(notification) {
       }
     });
+
     this.state = {
       dataSource: ds.cloneWithRows([]),
       totalPayment: 0,
-      payOut: 0
+      payOut: 0,
+      currentlyOpenItem: null
     };
   }
 
-  componentDidMount() {
-    this._refreshList()
+  static navigationOptions = {
+    title: 'WIMM',
   }
 
-  componentWillReceiveProps() {
+  componentWillMount() {
+    DeviceEventEmitter.addListener('refreshList', this._refreshList.bind(this))
+  }
+
+  componentDidMount() {
     this._refreshList()
   }
 
@@ -55,13 +68,21 @@ class PaymentsList extends Component {
     console.log("Database OPEN");
   }
 
+  closeOpenItem = () => {
+    const {currentlyOpenItem} = this.state;
+
+    if (currentlyOpenItem) {
+      currentlyOpenItem.recenter();
+    }
+  };
+
   _refreshList() {
     let total = 0, payOut = 0;
     db.executeSql('SELECT * FROM payments WHERE created_at BETWEEN "'
                   + moment().startOf('month').format('YYYY-MM-DD 00:00:00')
                   + '" AND "'
                   + moment().endOf('month').format('YYYY-MM-DD 00:00:00')
-                  + '"', [], (results) => {
+                  + '" ORDER BY pay_out ASC', [], (results) => {
       var len = results.rows.length;
       var rows = [];
       for (let i = 0; i < len; i++) {
@@ -78,16 +99,36 @@ class PaymentsList extends Component {
     }, this.errorCB)
   }
 
-  _renderRow(rowData) {
+  deletePayment = (paymentId) => {
+    db.executeSql("DELETE FROM payments WHERE payment_id = " + paymentId + ";")
+  }
+
+  _renderRow = (rowData) => {
+    const {currentlyOpenItem} = this.state;
+
     return (
-      <PaymentItem payment={rowData} db={db} ></PaymentItem>
+      <PaymentItem
+        payment={rowData}
+        db={db}
+        navigation={this.props.navigation}
+        onOpen={listItem => {
+              if (currentlyOpenItem && currentlyOpenItem !== listItem) {
+                currentlyOpenItem.recenter();
+              }
+
+              this.setState({currentlyOpenItem: listItem});
+            }}
+        onClose={() => this.setState({currentlyOpenItem: null})}
+      >
+      </PaymentItem>
     );
   }
 
   render() {
     let paymentProps = {
       db: db,
-      PushNotification: PushNotification
+      PushNotification: PushNotification,
+      navigation: this.props.navigation
     }
 
     return (
@@ -105,6 +146,7 @@ class PaymentsList extends Component {
         </View>
         <View style={{height: 500}}>
          <ListView
+           onScroll={this.closeOpenItem}
            dataSource={this.state.dataSource}
            renderRow={this._renderRow}
            enableEmptySections={true} />
