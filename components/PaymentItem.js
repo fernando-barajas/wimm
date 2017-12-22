@@ -14,11 +14,6 @@ class PaymentItem extends Component {
     this.state = {}
   }
 
-   static propTypes = {
-    payment: React.PropTypes.object.isRequired,
-    db: React.PropTypes.object.isRequired
-  }
-
   swipeable = null;
 
   recenter() {

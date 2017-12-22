@@ -11,4 +11,5 @@ const wimm = StackNavigator ({
   EditPayment: { screen: PaymentForm }
 });
 
-AppRegistry.registerComponent('wimm', () => wimm);
+export default wimm
+
