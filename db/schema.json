@@ -1,0 +1,32 @@
+{
+  "expenses": {
+    "fields": [
+      "due_date",
+      "description",
+      "amount"
+    ],
+    "definitions": [
+      "id integer primary key not null",
+      "due_date date",
+      "description text",
+      "amount numeric"
+    ]
+  },
+  "payments": {
+    "fields": [
+      "payment_type",
+      "institution",
+      "amount",
+      "pay_out",
+      "due_date"
+    ],
+    "definitions": [
+      "id integer primary key not null",
+      "payment_type varchar not null",
+      "institution varchar not null",
+      "amount numeric not null",
+      "pay_out numeric not null",
+      "due_date date not null"
+    ]
+  }
+}
