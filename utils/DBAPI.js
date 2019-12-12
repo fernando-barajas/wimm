@@ -15,14 +15,28 @@ export const initializeDB = async function() {
   });
 }
 
-export function createPayment(paymentType, institution, amount, payOut, dueDate) {
+export const createPayment = async function(paymentType, institution, amount, payOut, dueDate) {
   const db = SQLite.openDatabase('wimm.db');
-  db.transaction(tx => {
+  const formatedDate = dueDate.toLocaleDateString('en-US', {
+     year: 'numeric', mount: 'numeric', day: '2-digit'
+     }).replace(/ /g, '/')
+  await db.transaction(tx => {
     tx.executeSql(
       'INSERT INTO payments (payment_type, institution, amount, pay_out, due_date) VALUES (?, ?, ?, ?, ?)',
-     [paymentType, institution, amount, payOut, dueDate]
+     [paymentType, institution, amount, payOut, formatedDate]
     )
   },
-  (_, error) => console.log("error: ", error)
+  (_, error) => console.log("error: ", error),
+  (_, success) => console.log("Created: ", success)
   );
+}
+
+export function paymentsList() {
+  const db = SQLite.openDatabase('wimm.db');
+  return new Promise((resolve) => {
+    db.transaction(tx => {
+      tx.executeSql("SELECT * FROM payments", [],
+      (_, { rows: { _array } }) => resolve(_array) );
+    })
+  });
 }

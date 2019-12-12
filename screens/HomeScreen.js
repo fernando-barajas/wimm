@@ -10,58 +10,41 @@ import {
   View,
 } from 'react-native';
 
-import { MonoText } from '../components/StyledText';
 import { FloatingAction } from "react-native-floating-action";
-
-const actions = [
-  {
-    text: "Add payment",
-    name: "bt_add_payment",
-    position: 1
-  },
-];
+import { paymentsList } from '../utils/DBAPI';
+import { ListItem } from 'react-native-elements'
 
 export default class HomeScreen extends React.Component {
+  state = {
+    paymentsList: []
+  }
+  componentDidMount() {
+    paymentsList().then((paymentsList) => {
+      this.setState({
+        paymentsList
+      })
+    });
+  }
   render() {
     const {navigate} = this.props.navigation;
+    const { paymentsList } = this.state;
     return (
       <View style={styles.container}>
         <ScrollView
           style={styles.container}
           contentContainerStyle={styles.contentContainer}>
-          <View style={styles.welcomeContainer}>
-            <Image
-              source={
-                __DEV__
-                  ? require('../assets/images/robot-dev.png')
-                  : require('../assets/images/robot-prod.png')
-              }
-              style={styles.welcomeImage}
-            />
-          </View>
-
-          <View style={styles.getStartedContainer}>
-            <DevelopmentModeNotice />
-
-            <Text style={styles.getStartedText}>Get started by opening</Text>
-
-            <View
-              style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-              <MonoText>screens/HomeScreen.js</MonoText>
-            </View>
-
-            <Text style={styles.getStartedText}>
-              Change this text and your app will automatically reload.
-            </Text>
-          </View>
-
-          <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>
-                Help, it didn’t automatically reload!
-              </Text>
-            </TouchableOpacity>
-          </View>
+            {
+              paymentsList.map((l, i) => (
+                <ListItem
+                  key={i}
+                  title={l.institution}
+                  rightTitle={`$ ${l.amount}`}
+                  subtitle={l.due_date}
+                  bottomDivider
+                  chevron
+                />
+              ))
+            }
         </ScrollView>
 
         <FloatingAction

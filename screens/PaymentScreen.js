@@ -1,16 +1,20 @@
 import React from 'react'
-import { Text, View } from 'react-native'
+import { Picker, Text, TouchableOpacity, View } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
-import { Icon, Input } from 'react-native-elements'
+import {  Icon, Input } from 'react-native-elements'
+import { createPayment } from '../utils/DBAPI'
 
 export default class PaymentScreen extends React.Component {
   state = {
     date: new Date(),
-    mode: 'date',
     show: false,
+    institution: '',
+    amount: 0,
+    payOut: 0,
+    paymentType: 'Credit Card',
   }
 
-  setDate = (event, date) => {
+  setDate = (_event, date) => {
     date = date || this.state.date;
 
     this.setState({
@@ -19,44 +23,54 @@ export default class PaymentScreen extends React.Component {
     });
   }
 
-  show = mode => {
+  showdatepicker = () => {
     this.setState({
       show: true,
-      mode,
     });
   }
 
-  datepicker = () => {
-    this.show('date');
+  savePayment = () => {
+    const { paymentType, institution, amount, payOut, date } = this.state
+    createPayment(paymentType, institution, amount, payOut, date).then(() => {
+      this.props.navigation.navigate('Home')
+    })
   }
 
   render() {
-    const { show, date, mode } = this.state;
+    const { show, date } = this.state;
     return (
       <View style={{ padding: 30, paddingTop: 50 }}>
-        <View style={{display: 'flex', flexDirection: 'column', height: '70%'}}>
+        <View style={{ display: 'flex', flexDirection: 'column', height: '70%' }}>
           <View style={{ display: 'flex', flex: 1, justifyContent: 'space-evenly' }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 24, textAlign: 'center'}}>Add new payment</Text>
-            <Input placeholder='Institution'></Input>
-            <Input placeholder='Amount'></Input>
-            <Input
-            disabled
-            placeholder='Due date'
-            rightIcon={
-              <Icon
-                reverse
-                name='calendar'
-                type='font-awesome'
-                color='#466CFB'
-                onPress={this.datepicker}
-                size={16}
-              />
-            }
+            <Text style={{ fontWeight: 'bold', fontSize: 24, textAlign: 'center' }}>Add new payment</Text>
+            <Picker
+              selectedValue={this.state.paymentType}
+              onValueChange={(itemValue, itemIndex) => this.setState({paymentType: itemValue})}
             >
-              {date.toLocaleDateString() || ''}
-            </Input>
+              <Picker.Item label='Credit Card' value='Credit Card' />
+              <Picker.Item label='Cash' value='Cash' />
+            </Picker>
+            <Input placeholder='Institution' label='Institution' onChangeText={(institution) => this.setState({ institution })}></Input>
+            <Input placeholder='Amount' label='Amount' onChangeText={(amount) => this.setState({ amount })}></Input>
+            <TouchableOpacity onPress={this.showdatepicker} activeOpacity={1}>
+              <Input
+                disabled
+                label='Due date'
+                rightIcon={
+                  <Icon
+                    reverse
+                    name='calendar'
+                    type='font-awesome'
+                    color='#466CFB'
+                    size={16}
+                  />
+                }
+                >
+                {date.toLocaleDateString() || ''}
+                </Input>
+            </TouchableOpacity>
             { show && <DateTimePicker value={date}
-                      mode={mode}
+                      mode='date'
                       display="default"
                       onChange={this.setDate} />
             }
@@ -67,7 +81,7 @@ export default class PaymentScreen extends React.Component {
               type='font-awesome'
               name='check'
               color='#1AC80B'
-              onPress={() => this.props.navigation.navigate('Home')}
+              onPress={this.savePayment}
             />
             <Icon
               reverse
