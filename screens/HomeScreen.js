@@ -12,27 +12,45 @@ import {
 
 import { FloatingAction } from "react-native-floating-action";
 import { paymentsList } from '../utils/DBAPI';
-import { ListItem } from 'react-native-elements'
+import { Header, ListItem } from 'react-native-elements'
 
 export default class HomeScreen extends React.Component {
   state = {
-    paymentsList: []
+    paymentsList: [],
+    totalOfMonth: 0
   }
   componentDidMount() {
     paymentsList().then((paymentsList) => {
+      console.log(paymentsList);
+      let totalOfMonth = paymentsList.reduce(function(accumulator, { amount }) {
+        return accumulator + parseInt(amount)
+      }, 0);
       this.setState({
-        paymentsList
+        paymentsList,
+        totalOfMonth
       })
     });
   }
+
+  totalOfMonth = () => {
+    let total = this.state.totalOfMonth;
+    return `$ ${total}`;
+  }
+
   render() {
     const {navigate} = this.props.navigation;
     const { paymentsList } = this.state;
     return (
       <View style={styles.container}>
-        <ScrollView
+        <Header
+          placement='left'
+          leftComponent={{ text: 'Total month payment', style: { color: '#fff', fontSize: 24 } }}
+          centerComponent={{ text: this.totalOfMonth(), style: { color: '#fff', fontSize: 24 } }}
+        />
+        <View
           style={styles.container}
           contentContainerStyle={styles.contentContainer}>
+          <ScrollView>
             {
               paymentsList.map((l, i) => (
                 <ListItem
@@ -45,8 +63,8 @@ export default class HomeScreen extends React.Component {
                 />
               ))
             }
-        </ScrollView>
-
+          </ScrollView>
+        </View>
         <FloatingAction
           onPressMain={() => {
             navigate('Payment');

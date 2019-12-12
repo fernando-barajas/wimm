@@ -18,7 +18,7 @@ export const initializeDB = async function() {
 export const createPayment = async function(paymentType, institution, amount, payOut, dueDate) {
   const db = SQLite.openDatabase('wimm.db');
   const formatedDate = dueDate.toLocaleDateString('en-US', {
-     year: 'numeric', mount: 'numeric', day: '2-digit'
+     year: 'numeric', month: 'numeric', day: '2-digit'
      }).replace(/ /g, '/')
   await db.transaction(tx => {
     tx.executeSql(
