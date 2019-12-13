@@ -40,8 +40,8 @@ export default class PaymentScreen extends React.Component {
     const { show, date } = this.state;
     return (
       <View style={{ padding: 30, paddingTop: 50 }}>
-        <View style={{ display: 'flex', flexDirection: 'column', height: '70%' }}>
-          <View style={{ display: 'flex', flex: 1, justifyContent: 'space-evenly' }}>
+        <View style={{ height: '70%' }}>
+          <View style={{ flex: 1, justifyContent: 'space-evenly' }}>
             <Text style={{ fontWeight: 'bold', fontSize: 24, textAlign: 'center' }}>Add new payment</Text>
             <Picker
               selectedValue={this.state.paymentType}
@@ -50,19 +50,35 @@ export default class PaymentScreen extends React.Component {
               <Picker.Item label='Credit Card' value='Credit Card' />
               <Picker.Item label='Cash' value='Cash' />
             </Picker>
-            <Input placeholder='Institution' label='Institution' onChangeText={(institution) => this.setState({ institution })}></Input>
-            <Input placeholder='Amount' label='Amount' onChangeText={(amount) => this.setState({ amount })}></Input>
+            <Input
+              placeholder='Institution'
+              label='Institution'
+              rightIcon={
+                <Icon
+                  name='credit-card'
+                  type='font-awesome'
+                />
+              }
+              onChangeText={(institution) => this.setState({ institution })}
+            />
+            <Input
+              placeholder='Amount'
+              label='Amount'
+              rightIcon={
+                <Icon
+                  name='money'
+                  type='font-awesome'
+                />
+              }
+              onChangeText={(amount) => this.setState({ amount })}/>
             <TouchableOpacity onPress={this.showdatepicker} activeOpacity={1}>
               <Input
                 disabled
                 label='Due date'
                 rightIcon={
                   <Icon
-                    reverse
                     name='calendar'
                     type='font-awesome'
-                    color='#466CFB'
-                    size={16}
                   />
                 }
                 >
@@ -77,14 +93,14 @@ export default class PaymentScreen extends React.Component {
           </View>
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
             <Icon
-              reverse
+              raised
               type='font-awesome'
               name='check'
               color='#1AC80B'
               onPress={this.savePayment}
             />
             <Icon
-              reverse
+              raised
               type='font-awesome'
               name='times'
               color='#D01919'

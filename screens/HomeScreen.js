@@ -21,7 +21,6 @@ export default class HomeScreen extends React.Component {
   }
   componentDidMount() {
     paymentsList().then((paymentsList) => {
-      console.log(paymentsList);
       let totalOfMonth = paymentsList.reduce(function(accumulator, { amount }) {
         return accumulator + parseInt(amount)
       }, 0);
@@ -44,7 +43,7 @@ export default class HomeScreen extends React.Component {
       <View style={styles.container}>
         <Header
           placement='left'
-          leftComponent={{ text: 'Total month payment', style: { color: '#fff', fontSize: 24 } }}
+          leftComponent={{ text: 'Monthly Payment:', style: { color: '#fff', fontSize: 24 } }}
           centerComponent={{ text: this.totalOfMonth(), style: { color: '#fff', fontSize: 24 } }}
         />
         <View
@@ -57,6 +56,7 @@ export default class HomeScreen extends React.Component {
                   key={i}
                   title={l.institution}
                   rightTitle={`$ ${l.amount}`}
+                  rightSubtitle={`Deposits - $ ${l.pay_out}`}
                   subtitle={l.due_date}
                   bottomDivider
                   chevron
