@@ -3,6 +3,7 @@ import { Picker, Text, TouchableOpacity, View } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import {  Icon, Input } from 'react-native-elements'
 import { createPayment } from '../utils/DBAPI'
+import { scheduleReminder } from '../utils/LocalNotifications'
 
 export default class PaymentScreen extends React.Component {
   state = {
@@ -32,7 +33,9 @@ export default class PaymentScreen extends React.Component {
   savePayment = () => {
     const { paymentType, institution, amount, payOut, date } = this.state
     createPayment(paymentType, institution, amount, payOut, date).then(() => {
-      this.props.navigation.navigate('Home')
+      scheduleReminder(institution, amount, date).then(() => {
+        this.props.navigation.navigate('Home')
+      } )
     })
   }
 
