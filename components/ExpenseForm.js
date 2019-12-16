@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { TouchableWithoutFeedback, View, StyleSheet } from 'react-native'
+import DateTimePicker from '@react-native-community/datetimepicker'
 import { Input, Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -47,6 +48,11 @@ function ExpenseForm(props) {
             disable={true}
             editable={false}
           />
+          { showPicker && <DateTimePicker value={new Date(dueDate)}
+                      mode='date'
+                      display="default"
+                      onChange={(_, date) => { setDueDate(date) }} />
+          }
         </View>
       </TouchableWithoutFeedback>
       <Button

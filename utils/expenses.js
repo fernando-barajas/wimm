@@ -11,6 +11,7 @@ export function saveExpense(data) {
   db.insert(tableName, expense, (tx, success) => {
     console.log('success')
     console.log(success)
+    console.log(tx)
 
   }, (tx, error) => {
     console.log(tx)
