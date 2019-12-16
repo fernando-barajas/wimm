@@ -2,15 +2,11 @@ import * as SQLite from "expo-sqlite";
 
 import SCHEMA from './schema.json'
 
-const TABLES = Object.keys(SCHEMA).map(t => {
-  return { [t.toUpperCase()]: t }
-})
-
 let database = null;
 
 function db() {
   if (!database) {
-    console.log('[DB_LOG]: No database. Creating database')
+    console.log('[DB_LOG]: Open Database')
     database = SQLite.openDatabase("wimm.db");
   }
 
@@ -56,7 +52,7 @@ function insert(table, data, onSuccess, onError) {
 function migrate() {
   db()
     .transaction(tx => {
-      console.log('[DB_LOG]: Running migrations')
+      console.log('[DB_LOG]: Running migrations if needed')
       const sql = Object
         .keys(SCHEMA)
         .map(k => `create table if not exists ${k} (${SCHEMA[k].definitions.join(', ')})`)
@@ -74,5 +70,7 @@ export default {
     // Run migrations
     await migrate()
   },
-  tables: TABLES
+  tables: Object.keys(SCHEMA).map(t => {
+    return { [t.toUpperCase()]: t }
+  })
 }
