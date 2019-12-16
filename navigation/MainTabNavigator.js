@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import ExpensesScreen from '../screens/ExpensesScreen';
+import ExpenseFormScreen from '../screens/ExpenseFormScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
 const config = Platform.select({
@@ -36,21 +37,22 @@ HomeStack.navigationOptions = {
 
 HomeStack.path = '';
 
-const LinksStack = createStackNavigator(
+const ExpensesStack = createStackNavigator(
   {
-    Links: ExpensesScreen,
+    Expenses: ExpensesScreen,
+    AddExpense: ExpenseFormScreen
   },
   config
 );
 
-LinksStack.navigationOptions = {
+ExpensesStack.navigationOptions = {
   tabBarLabel: 'Gastos',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-wallet'} />
   ),
 };
 
-LinksStack.path = '';
+ExpensesStack.path = '';
 
 const SettingsStack = createStackNavigator(
   {
@@ -71,7 +73,7 @@ SettingsStack.path = '';
 
 const tabNavigator = createBottomTabNavigator({
   HomeStack,
-  LinksStack,
+  ExpensesStack,
   SettingsStack,
 });
 
