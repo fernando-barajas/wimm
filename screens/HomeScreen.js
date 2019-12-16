@@ -1,69 +1,68 @@
 import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
 import {
-  Image,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
-import { MonoText } from '../components/StyledText';
 import { FloatingAction } from "react-native-floating-action";
-
-const actions = [
-  {
-    text: "Add payment",
-    name: "bt_add_payment",
-    position: 1
-  },
-];
+import { paymentsList } from '../utils/DBAPI';
+import { Header, ListItem } from 'react-native-elements'
 
 export default class HomeScreen extends React.Component {
+  state = {
+    paymentsList: [],
+    totalOfMonth: 0
+  }
+  componentDidMount() {
+    paymentsList().then((paymentsList) => {
+      let totalOfMonth = paymentsList.reduce(function(accumulator, { amount }) {
+        return accumulator + parseInt(amount)
+      }, 0);
+      this.setState({
+        paymentsList,
+        totalOfMonth
+      })
+    });
+  }
+
+  totalOfMonth = () => {
+    let total = this.state.totalOfMonth;
+    return `$ ${total}`;
+  }
+
   render() {
     const {navigate} = this.props.navigation;
+    const { paymentsList } = this.state;
     return (
       <View style={styles.container}>
-        <ScrollView
+        <Header
+          placement='left'
+          leftComponent={{ text: 'Monthly Payment:', style: { color: '#fff', fontSize: 24 } }}
+          centerComponent={{ text: this.totalOfMonth(), style: { color: '#fff', fontSize: 24 } }}
+        />
+        <View
           style={styles.container}
           contentContainerStyle={styles.contentContainer}>
-          <View style={styles.welcomeContainer}>
-            <Image
-              source={
-                __DEV__
-                  ? require('../assets/images/robot-dev.png')
-                  : require('../assets/images/robot-prod.png')
-              }
-              style={styles.welcomeImage}
-            />
-          </View>
-
-          <View style={styles.getStartedContainer}>
-            <DevelopmentModeNotice />
-
-            <Text style={styles.getStartedText}>Get started by opening</Text>
-
-            <View
-              style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-              <MonoText>screens/HomeScreen.js</MonoText>
-            </View>
-
-            <Text style={styles.getStartedText}>
-              Change this text and your app will automatically reload.
-            </Text>
-          </View>
-
-          <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>
-                Help, it didn’t automatically reload!
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-
+          <ScrollView>
+            {
+              paymentsList.map((l, i) => (
+                <ListItem
+                  key={i}
+                  title={l.institution}
+                  rightTitle={`$ ${l.amount}`}
+                  rightSubtitle={`Deposits - $ ${l.pay_out}`}
+                  subtitle={l.due_date}
+                  bottomDivider
+                  chevron
+                />
+              ))
+            }
+          </ScrollView>
+        </View>
         <FloatingAction
           onPressMain={() => {
             navigate('Payment');
