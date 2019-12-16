@@ -4,6 +4,8 @@ import SCHEMA from './schema.json'
 
 let database = null;
 
+const tables = Object.keys(SCHEMA).map(t => ({ [t.toUpperCase()]: t })).reduce((acc, item) => ({ ...acc, ...item}), {})
+
 function db() {
   if (!database) {
     console.log('[DB_LOG]: Open Database')
@@ -70,7 +72,5 @@ export default {
     // Run migrations
     await migrate()
   },
-  tables: Object.keys(SCHEMA).map(t => {
-    return { [t.toUpperCase()]: t }
-  })
+  tables: tables
 }
