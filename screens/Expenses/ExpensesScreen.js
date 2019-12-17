@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { FloatingAction } from "react-native-floating-action";
 
-import ExpensesList from '../components/ExpensesList'
+import ExpensesList from '../../components/expenses/ExpensesList'
 
 export default function ExpensesScreen(props) {
   const { navigate } = props.navigation

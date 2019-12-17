@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { View, Text } from 'react-native'
 import { ListItem, Divider } from 'react-native-elements'
 
-import { getAllExpenses } from '../utils/expenses'
+// import { getAllExpenses } from '../utils/expenses'
 
 function ExpensesList(props) {
 
@@ -10,19 +10,19 @@ function ExpensesList(props) {
   const [total, setTotal] = useState(0)
 
   useEffect(() => {
-    getAllExpenses((data) => {
-      setExpenses(data)
+    // getAllExpenses((data) => {
+    //   setExpenses(data)
 
-      const total = data.reduce((acc, value) => {
-          return parseFloat(acc + parseFloat(value.amount))
-      }, 0)
+    //   const total = data.reduce((acc, value) => {
+    //       return parseFloat(acc + parseFloat(value.amount))
+    //   }, 0)
 
-      setTotal(total)
+    //   setTotal(total)
 
-    }, (error) => {
-      console.error(error)
+    // }, (error) => {
+    //   console.error(error)
 
-    })
+    // })
 
   }, [])
 

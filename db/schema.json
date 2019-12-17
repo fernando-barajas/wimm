@@ -18,7 +18,8 @@
       "institution",
       "amount",
       "pay_out",
-      "due_date"
+      "due_date",
+      "created_at"
     ],
     "definitions": [
       "id integer primary key not null",
@@ -26,7 +27,8 @@
       "institution varchar not null",
       "amount numeric not null",
       "pay_out numeric not null",
-      "due_date date not null"
+      "due_date date not null",
+      "created_at timestamp default current_timestamp not null"
     ]
   }
 }

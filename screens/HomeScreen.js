@@ -1,116 +1,73 @@
-import * as WebBrowser from 'expo-web-browser';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
-
-import { FloatingAction } from "react-native-floating-action";
-import { paymentsList } from '../utils/DBAPI';
+import { FloatingAction } from 'react-native-floating-action';
 import { Header, ListItem } from 'react-native-elements'
 
-export default class HomeScreen extends React.Component {
-  state = {
-    paymentsList: [],
-    totalOfMonth: 0
-  }
-  componentDidMount() {
-    paymentsList().then((paymentsList) => {
-      let totalOfMonth = paymentsList.reduce(function(accumulator, { amount }) {
-        return accumulator + parseInt(amount)
-      }, 0);
-      this.setState({
-        paymentsList,
-        totalOfMonth
-      })
-    });
-  }
+import PaymentsService from '../services/payments'
 
-  totalOfMonth = () => {
-    let total = this.state.totalOfMonth;
-    return `$ ${total}`;
-  }
+function HomeScreen(props) {
+  const { navigate } = props.navigation
 
-  render() {
-    const {navigate} = this.props.navigation;
-    const { paymentsList } = this.state;
-    return (
-      <View style={styles.container}>
-        <Header
-          placement='left'
-          leftComponent={{ text: 'Monthly Payment:', style: { color: '#fff', fontSize: 24 } }}
-          centerComponent={{ text: this.totalOfMonth(), style: { color: '#fff', fontSize: 24 } }}
-        />
-        <View
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}>
-          <ScrollView>
-            {
-              paymentsList.map((l, i) => (
-                <ListItem
-                  key={i}
-                  title={l.institution}
-                  rightTitle={`$ ${l.amount}`}
-                  rightSubtitle={`Deposits - $ ${l.pay_out}`}
-                  subtitle={l.due_date}
-                  bottomDivider
-                  chevron
-                />
-              ))
-            }
-          </ScrollView>
-        </View>
-        <FloatingAction
-          onPressMain={() => {
-            navigate('Payment');
-          }}
-        />
+  useEffect(() => {
+    PaymentsService.get((data) => {
+      console.log('get payments success')
+      console.log(data)
+    }, (error) => {
+      console.log('get payments error')
+      console.log(error)
+    })
+
+  }, [])
+
+
+  return (
+    <View style={styles.container}>
+      <Header
+        placement="left"
+        leftComponent={{
+          text: "Monthly Payment:",
+          style: { color: "#fff", fontSize: 24 }
+        }}
+        centerComponent={{
+          text: '$0',
+          style: { color: "#fff", fontSize: 24 }
+        }}
+      />
+      <View
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+      >
+        <ScrollView>
+          {/* {paymentsList.map((l, i) => (
+            <ListItem
+              key={i}
+              title={l.institution}
+              rightTitle={`$ ${l.amount}`}
+              rightSubtitle={`Deposits - $ ${l.pay_out}`}
+              subtitle={l.due_date}
+              bottomDivider
+              chevron
+            />
+          ))} */}
+        </ScrollView>
       </View>
-    );
-  }
+      <FloatingAction
+        onPressMain={() => {
+          navigate("Payment");
+        }}
+      />
+    </View>
+  );
 }
 
 HomeScreen.navigationOptions = {
   header: null,
 };
-
-function DevelopmentModeNotice() {
-  if (__DEV__) {
-    const learnMoreButton = (
-      <Text onPress={handleLearnMorePress} style={styles.helpLinkText}>
-        Learn more
-      </Text>
-    );
-
-    return (
-      <Text style={styles.developmentModeText}>
-        Development mode is enabled: your app will be slower but you can use
-        useful development tools. {learnMoreButton}
-      </Text>
-    );
-  } else {
-    return (
-      <Text style={styles.developmentModeText}>
-        You are not in development mode: your app will run at full speed.
-      </Text>
-    );
-  }
-}
-
-function handleLearnMorePress() {
-  WebBrowser.openBrowserAsync(
-    'https://docs.expo.io/versions/latest/workflow/development-mode/'
-  );
-}
-
-function handleHelpPress() {
-  WebBrowser.openBrowserAsync(
-    'https://docs.expo.io/versions/latest/workflow/up-and-running/#cant-see-your-changes'
-  );
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -200,3 +157,5 @@ const styles = StyleSheet.create({
     color: '#2e78b7',
   },
 });
+
+export default HomeScreen

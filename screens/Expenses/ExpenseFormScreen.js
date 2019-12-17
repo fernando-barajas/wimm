@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import ExpenseForm from '../components/ExpenseForm'
+import ExpenseForm from '../../components/expenses/ExpenseForm'
 
 export default function ExpenseFormScreen() {
   return (

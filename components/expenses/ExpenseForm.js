@@ -4,7 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import { Input, Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import { saveExpense } from '../utils/expenses'
+// import { saveExpense } from '../utils/expenses'
 
 function ExpenseForm(props) {
 
@@ -57,7 +57,7 @@ function ExpenseForm(props) {
       </TouchableWithoutFeedback>
       <Button
         title="Save"
-        onPress={() => saveExpense({ amount, dueDate, description })}
+        onPress={() => {}}
       />
     </View>
   )
