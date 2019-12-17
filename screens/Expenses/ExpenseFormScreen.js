@@ -13,10 +13,6 @@ export default function ExpenseFormScreen() {
   );
 }
 
-ExpenseFormScreen.navigationOptions = {
-  title: 'Nuevo Gasto',
-};
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

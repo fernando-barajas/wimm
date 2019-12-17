@@ -1,29 +1,23 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { FloatingAction } from "react-native-floating-action";
+import { ScrollView, StyleSheet } from 'react-native';
 
 import ExpensesList from '../../components/expenses/ExpensesList'
+import AppLayout from '../../components/ui/AppLayout'
 
 export default function ExpensesScreen(props) {
   const { navigate } = props.navigation
 
   return (
-    <View style={styles.container}>
+    <AppLayout
+      linkTo="AddExpenses"
+      headerLeftText="Gastos"
+    >
       <ScrollView style={styles.container}>
         <ExpensesList />
       </ScrollView>
-      <FloatingAction
-        onPressMain={() => {
-          navigate("AddExpense");
-        }}
-      />
-    </View>
+    </AppLayout>
   );
 }
-
-ExpensesScreen.navigationOptions = {
-  title: 'Gastos',
-};
 
 const styles = StyleSheet.create({
   container: {

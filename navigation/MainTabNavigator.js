@@ -13,7 +13,11 @@ import PaymentsScreen from '../screens/Payments/PaymentScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
-  default: {},
+  default: {
+    defaultNavigationOptions: {
+      header: null
+    }
+  },
 });
 
 
@@ -21,7 +25,7 @@ const config = Platform.select({
 const HomeStack = createStackNavigator({ Home: HomeScreen }, config);
 
 HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+  tabBarLabel: 'Inicio',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -35,7 +39,7 @@ HomeStack.path = '';
 const PaymentsStack = createStackNavigator( { Payments: PaymentsScreen }, config);
 
 PaymentsStack.navigationOptions = {
-  tabBarLabel: 'Payments',
+  tabBarLabel: 'Pagos',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name="md-card" />
   ),
@@ -63,7 +67,7 @@ ExpensesStack.path = '';
 const SettingsStack = createStackNavigator( { Settings: SettingsScreen }, config);
 
 SettingsStack.navigationOptions = {
-  tabBarLabel: 'Settings',
+  tabBarLabel: 'Config.',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'} />
   ),

@@ -6,10 +6,17 @@ import { Icon, Input } from 'react-native-elements'
 // import { scheduleReminder } from '../utils/LocalNotifications'
 
 import PaymentList from '../../components/payments/PaymentList'
+import AppLayout from '../../components/ui/AppLayout'
 
 export default function PaymentScreen() {
 
-  return <PaymentList />
+  return (
+    <AppLayout
+      linkTo="Payments"
+      headerLeftText="Pagos">
+      <PaymentList />
+    </AppLayout>
+  )
 }
 
 // export default class PaymentScreen extends React.Component {
