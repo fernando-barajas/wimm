@@ -4,10 +4,12 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 
 import TabBarIcon from '../components/ui/TabBarIcon';
+
 import HomeScreen from '../screens/HomeScreen';
 import ExpensesScreen from '../screens/Expenses/ExpensesScreen';
 import ExpenseFormScreen from '../screens/Expenses/ExpenseFormScreen';
 import SettingsScreen from '../screens/Settings/SettingsScreen';
+import PaymentsScreen from '../screens/Payments/PaymentScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -23,15 +25,22 @@ HomeStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
+      name="md-apps"
     />
   ),
 };
 HomeStack.path = '';
+
+// Payments Tab Router
+const PaymentsStack = createStackNavigator( { Payments: PaymentsScreen }, config);
+
+PaymentsStack.navigationOptions = {
+  tabBarLabel: 'Payments',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon focused={focused} name="md-card" />
+  ),
+};
+PaymentsStack.path = ''
 
 // Expense Tab Router
 const ExpensesStack = createStackNavigator(
@@ -45,7 +54,7 @@ const ExpensesStack = createStackNavigator(
 ExpensesStack.navigationOptions = {
   tabBarLabel: 'Gastos',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-wallet'} />
+    <TabBarIcon focused={focused} name="md-cart" />
   ),
 };
 ExpensesStack.path = '';
@@ -63,6 +72,7 @@ SettingsStack.path = '';
 
 const tabNavigator = createBottomTabNavigator({
   HomeStack,
+  PaymentsStack,
   ExpensesStack,
   SettingsStack,
 });
