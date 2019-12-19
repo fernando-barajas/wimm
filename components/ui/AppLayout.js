@@ -25,10 +25,10 @@ function AppLayout(props) {
         {props.children}
       </View>
       {
-        props.linkTo && (<FloatingAction
-          onPressMain={() => {
-            // navigate(props.linkTo);
-          }}
+        props.floatText && (<FloatingAction
+          onPressMain={props.floatPress}
+          animated={false}
+          showBackground={false}
         />)
       }
     </View>

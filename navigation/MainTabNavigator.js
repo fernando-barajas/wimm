@@ -14,6 +14,7 @@ import PaymentsScreen from '../screens/Payments/PaymentScreen';
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {
+    mode: 'modal',
     defaultNavigationOptions: {
       header: null
     }

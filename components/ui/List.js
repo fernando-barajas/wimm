@@ -4,8 +4,9 @@ import { ListItem } from 'react-native-elements'
 function List(props) {
   const { items, onTapItem } = props
 
-  return items.map(item => (
+  return items.map((item, i) => (
     <ListItem
+      key={i}
       friction={90} //
       activeScale={0.95} //
       linearGradientProps={{

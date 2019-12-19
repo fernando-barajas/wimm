@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TouchableWithoutFeedback, View, StyleSheet } from 'react-native'
+import { TouchableWithoutFeedback, View, StyleSheet, Modal } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { Input, Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -18,58 +18,84 @@ function ExpenseForm(props) {
   const descriptionIcon = <Icon name='google-wallet' size={24} color='white'/>
 
   return (
-    <View style={styles.container}>
-       <Input
-        placeholder="Concepto"
-        placeholderTextColor="#CCCEC8"
-        autoFocus
-        leftIcon={descriptionIcon}
-        onChangeText={setDescription}
-        value={description}
-      />
-      <Input
-        placeholder="Registra una cantidad"
-        keyboardType="numeric"
-        placeholderTextColor="#CCCEC8"
-        autoFocus
-        leftIcon={dollarIcon}
-        onChangeText={setAmount}
-        value={amount}
-      />
-      <TouchableWithoutFeedback onPress={() => setShowPicker(true)}>
-        <View style={{ width: '100%' }}>
-          <Input
-            placeholder="Fecha"
-            keyboardType="numeric"
-            placeholderTextColor="#CCCEC8"
-            autoFocus
-            leftIcon={dateIcon}
-            value={dueDate}
-            disable={true}
-            editable={false}
-          />
-          { showPicker && <DateTimePicker value={new Date(dueDate)}
-                      mode='date'
-                      display="default"
-                      onChange={(_, date) => { setDueDate(date) }} />
-          }
+    <Modal
+      style={styles.modal}
+      animationType="slide"
+      transparent={true}
+      visible={props.show}
+      onRequestClose={props.onPageDismiss}>
+      <View style={styles.backdrop} onPress={() => { alert('press')}}>
+        <View style={styles.container}>
+          <View style={styles.input}>
+            <Input
+              placeholder="Concepto"
+              placeholderTextColor="#CCCEC8"
+              leftIcon={descriptionIcon}
+              onChangeText={setDescription}
+              value={description}
+            />
+          </View>
+          <View style={styles.input}>
+            <Input
+              placeholder="Registra una cantidad"
+              keyboardType="numeric"
+              placeholderTextColor="#CCCEC8"
+              autoFocus
+              leftIcon={dollarIcon}
+              onChangeText={setAmount}
+              value={amount}
+            />
+          </View>
+          <TouchableWithoutFeedback onPress={() => setShowPicker(true)}>
+            <View style={styles.input}>
+              <Input
+                placeholder="Fecha"
+                keyboardType="numeric"
+                placeholderTextColor="#CCCEC8"
+                leftIcon={dateIcon}
+                value={dueDate}
+                disable={true}
+                editable={false}
+              />
+              {showPicker && (
+                <DateTimePicker
+                  value={new Date(dueDate)}
+                  mode="date"
+                  display="default"
+                  onChange={(_, date) => {
+                    setDueDate(date);
+                  }}
+                />
+              )}
+            </View>
+          </TouchableWithoutFeedback>
+          <Button title="Save" style={styles.button} onPress={() => {}} />
         </View>
-      </TouchableWithoutFeedback>
-      <Button
-        title="Save"
-        onPress={() => {}}
-      />
-    </View>
-  )
+      </View>
+    </Modal>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#337CA0',
+    paddingVertical: 15,
+    paddingHorizontal: 10
   },
+  backdrop: {
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    flex: 1
+  },
+  modal: {
+    flex: 1
+  },
+  input: {
+    marginTop: 30,
+    width: '100%'
+  }
 });
 
 export default ExpenseForm

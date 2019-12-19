@@ -1,19 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
 import ExpensesList from '../../components/expenses/ExpensesList'
+import ExpensesForm from '../../components/expenses/ExpenseForm'
 import AppLayout from '../../components/ui/AppLayout'
 
 export default function ExpensesScreen(props) {
   const { navigate } = props.navigation
+  const [showForm, setShowForm] = useState(false)
 
   return (
     <AppLayout
-      linkTo="AddExpenses"
+      floatText="AddExpenses"
+      floatPress={() => setShowForm(true)}
       headerLeftText="Gastos"
     >
       <ScrollView style={styles.container}>
         <ExpensesList />
+        <ExpensesForm
+          show={showForm}
+          onPageDismiss={() => setShowForm(false)}
+        />
       </ScrollView>
     </AppLayout>
   );
