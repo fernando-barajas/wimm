@@ -6,7 +6,6 @@ import ExpensesForm from '../../components/expenses/ExpenseForm'
 import AppLayout from '../../components/ui/AppLayout'
 
 export default function ExpensesScreen(props) {
-  const { navigate } = props.navigation
   const [showForm, setShowForm] = useState(false)
 
   return (
@@ -16,7 +15,7 @@ export default function ExpensesScreen(props) {
       headerLeftText="Gastos"
     >
       <ScrollView style={styles.container}>
-        <ExpensesList />
+        <ExpensesList refresh={showForm}/>
         <ExpensesForm
           show={showForm}
           onPageDismiss={() => setShowForm(false)}

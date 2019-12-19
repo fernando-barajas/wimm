@@ -24,7 +24,7 @@ function ExpensesList(props) {
 
     })
 
-  }, [])
+  }, [props.refresh])
 
   return (
     <View>

@@ -7,7 +7,6 @@ import TabBarIcon from '../components/ui/TabBarIcon';
 
 import HomeScreen from '../screens/HomeScreen';
 import ExpensesScreen from '../screens/Expenses/ExpensesScreen';
-import ExpenseFormScreen from '../screens/Expenses/ExpenseFormScreen';
 import SettingsScreen from '../screens/Settings/SettingsScreen';
 import PaymentsScreen from '../screens/Payments/PaymentScreen';
 
@@ -50,8 +49,7 @@ PaymentsStack.path = ''
 // Expense Tab Router
 const ExpensesStack = createStackNavigator(
   {
-    Expenses: ExpensesScreen,
-    AddExpense: ExpenseFormScreen
+    Expenses: ExpensesScreen
   },
   config
 );

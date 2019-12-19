@@ -26,6 +26,7 @@ function ExpenseForm(props) {
     }
 
     saveExpense(expense)
+    props.onPageDismiss()
   }
 
   return (
