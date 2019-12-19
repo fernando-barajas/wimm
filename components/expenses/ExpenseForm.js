@@ -4,7 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import { Input, Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-// import { saveExpense } from '../utils/expenses'
+import { saveExpense } from '../../services/expenses'
 
 function ExpenseForm(props) {
 
@@ -17,6 +17,17 @@ function ExpenseForm(props) {
   const dateIcon = <Icon name='calendar' size={24} color='white'/>
   const descriptionIcon = <Icon name='google-wallet' size={24} color='white'/>
 
+  const createExpense = () => {
+
+    const expense = {
+      amount,
+      description,
+      dueDate
+    }
+
+    saveExpense(expense)
+  }
+
   return (
     <Modal
       style={styles.modal}
@@ -24,7 +35,7 @@ function ExpenseForm(props) {
       transparent={true}
       visible={props.show}
       onRequestClose={props.onPageDismiss}>
-      <View style={styles.backdrop} onPress={() => { alert('press')}}>
+      <View style={styles.backdrop}>
         <View style={styles.container}>
           <View style={styles.input}>
             <Input
@@ -69,7 +80,7 @@ function ExpenseForm(props) {
               )}
             </View>
           </TouchableWithoutFeedback>
-          <Button title="Save" style={styles.button} onPress={() => {}} />
+          <Button title="Save" style={styles.button} onPress={() => createExpense()} />
         </View>
       </View>
     </Modal>
