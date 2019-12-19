@@ -29,10 +29,14 @@ function get(table, criteria, onSuccess, onError) {
           args.push(criteria[k])
         })
       }
-
+      console.log(`[DB_LOG]: Query (${new Date().toLocaleString()}): ${query + where}`)
       tx.executeSql(query + where, args, (t, data) => {
         onSuccess(data.rows._array)
-      }, onError)
+      }, (t, error) => {
+        console.log('t', t)
+        console.log('error', error)
+        onError(error)
+      })
 
     })
 }
@@ -55,11 +59,22 @@ function migrate() {
   db()
     .transaction(tx => {
       console.log('[DB_LOG]: Running migrations if needed')
-      const sql = Object
+      Object
         .keys(SCHEMA)
-        .map(k => `create table if not exists ${k} (${SCHEMA[k].definitions.join(', ')})`)
+        .forEach(k => {
+          const statement = `create table if not exists ${k} (${SCHEMA[k].definitions.join(', ')})`
+          tx.executeSql(statement, (tx, success) => {
+            console.log('success migration for table: ', k)
+            console.log(tx)
+            console.log(success)
 
-      return tx.executeSql(sql.join(';'))
+          }, (tx, error) => {
+            console.log('error migration for table: ', k)
+            console.log(tx)
+            console.log(error)
+
+          })
+        })
     })
 }
 

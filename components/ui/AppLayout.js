@@ -5,6 +5,8 @@ import { Header } from 'react-native-elements'
 
 function AppLayout(props) {
 
+  const renderFloatButton = typeof props.floatPress !== 'undefined'
+
   return (
     <View style={styles.container}>
       <Header
@@ -25,7 +27,7 @@ function AppLayout(props) {
         {props.children}
       </View>
       {
-        props.floatText && (<FloatingAction
+        renderFloatButton && (<FloatingAction
           onPressMain={props.floatPress}
           animated={false}
           showBackground={false}

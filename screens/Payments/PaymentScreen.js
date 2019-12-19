@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Picker, Text, TouchableOpacity, View } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { Icon, Input } from 'react-native-elements'
@@ -6,15 +6,21 @@ import { Icon, Input } from 'react-native-elements'
 // import { scheduleReminder } from '../utils/LocalNotifications'
 
 import PaymentList from '../../components/payments/PaymentList'
+import PaymentForm from '../../components/payments/PaymentForm'
 import AppLayout from '../../components/ui/AppLayout'
 
 export default function PaymentScreen() {
+  const [showForm, setShowForm] = useState(false)
 
   return (
     <AppLayout
-      linkTo="Payments"
+      floatPress={() => setShowForm(true)}
       headerLeftText="Pagos">
-      <PaymentList />
+      <PaymentList refresh={showForm}/>
+      <PaymentForm
+        show={showForm}
+        onPageDismiss={() => setShowForm(false)}
+      />
     </AppLayout>
   )
 }
