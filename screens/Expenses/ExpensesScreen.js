@@ -10,12 +10,11 @@ export default function ExpensesScreen(props) {
 
   return (
     <AppLayout
-      floatText="AddExpenses"
       floatPress={() => setShowForm(true)}
       headerLeftText="Gastos"
     >
       <ScrollView style={styles.container}>
-        <ExpensesList refresh={showForm}/>
+        <ExpensesList refresh={!showForm}/>
         <ExpensesForm
           show={showForm}
           onPageDismiss={() => setShowForm(false)}

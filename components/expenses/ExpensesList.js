@@ -10,6 +10,9 @@ function ExpensesList(props) {
   const [total, setTotal] = useState(0)
 
   useEffect(() => {
+
+    if (!props.refresh) return
+
     getAllExpenses((data) => {
       setExpenses(data)
 
