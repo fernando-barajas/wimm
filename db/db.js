@@ -24,9 +24,9 @@ function get(table, criteria, onSuccess, onError) {
       let args = []
       if (Object.keys(criteria).length) {
         where += ' where '
-        Object.keys(criteria).forEach((k, i) => {
-          where += i == 0 ? k + '=? ' : `and ${k}=?`
-          args.push(criteria[k])
+        Object.entries(criteria).forEach(([k, v], i) => {
+          where += i == 0 ? `${k} ${v.operator}?` : `${v.logical_operator} ${k} ${v.operator}?`
+          args.push(v.argument)
         })
       }
       console.log(`[DB_LOG]: Query (${new Date().toLocaleString()}): ${query + where}`)

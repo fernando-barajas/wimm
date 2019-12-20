@@ -14,7 +14,6 @@
   },
   "payments": {
     "fields": [
-      "payment_type",
       "institution",
       "amount",
       "pay_out",
@@ -23,7 +22,6 @@
     ],
     "definitions": [
       "id integer primary key not null",
-      "payment_type varchar not null",
       "institution varchar not null",
       "amount numeric not null",
       "pay_out numeric not null",

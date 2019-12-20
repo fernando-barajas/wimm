@@ -2,9 +2,7 @@ import db from '../db/db'
 
 function createPayment(data) {
   const tableName = db.tables.PAYMENTS
-  const paymentDueDate = data.dueDate.toLocaleDateString('en-US', {
-    year: 'numeric', month: 'numeric', day: '2-digit'
-  }).replace(/ /g, '/')
+  const paymentDueDate = formatDate(data.dueDate)
   const payment = {
     payment_type: data.paymentType,
     institution: data.institution,
@@ -28,8 +26,22 @@ function createPayment(data) {
 function getAllPayments(done, error) {
 
   const tableName = db.tables.PAYMENTS
+  let startDate = beginningOfMonth()
 
-  db.get(tableName, {}, done, error)
+  db.get(tableName, { due_date: { operator: '>=', argument: startDate } }, done, error)
+}
+
+function beginningOfMonth() {
+  const today = new Date();
+
+  let beginDate = new Date(today.getFullYear(), today.getMonth(), 1)
+  return formatDate(beginDate)
+}
+
+function formatDate(date) {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric', month: 'numeric', day: '2-digit'
+  }).replace(/\//g, '-')
 }
 
 export default {

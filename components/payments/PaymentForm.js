@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { Picker, View, Modal, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { Picker, Text, TouchableOpacity, View, Modal, StyleSheet } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
-import { Input, Button, Icon } from 'react-native-elements'
+import { Icon, Input } from 'react-native-elements'
 
 function PaymentForm(props) {
     const [dueDate, setDueDate] = useState(new Date())
@@ -9,11 +9,18 @@ function PaymentForm(props) {
     const [amount, setAmount] = useState(0)
     const [payOut, setPayOut] = useState(0)
     const [showPicker, setShowPicker] = useState(false)
-    const [paymentType, setPaymentType] = useState('Credit Card')
 
     const institutionIcon = (<Icon name='credit-card' type='font-awesome' />)
     const moneyIcon = (<Icon name='money' type='font-awesome' />)
     const calendarIcon = (<Icon name='calendar' type='font-awesome' />)
+
+    const savePayment = () => {
+     createPayment(institution, amount, payOut, dueDate).then(() => {
+       scheduleReminder(institution, amount, date).then(() => {
+         this.props.navigation.navigate('Home')
+       } )
+     })
+   }
 
     return (
       <Modal
@@ -22,63 +29,57 @@ function PaymentForm(props) {
         transparent={true}
         visible={props.show}
         onRequestClose={props.onPageDismiss}>
-        <View style={styles.backdrop}>
-          <View style={styles.container}>
-            <View style={styles.input}>
-              <Picker
-                selectedValue={paymentType}
-                onValueChange={(itemValue) => setPaymentType(itemValue)}
-              >
-                <Picker.Item label='Credit Card' value='Credit Card' />
-                <Picker.Item label='Cash' value='Cash' />
-              </Picker>
-            </View>
-            <View style={styles.input}>
-              <Input
-                placeholder="Establecimiento"
-                placeholderTextColor="#CCCEC8"
-                leftIcon={institutionIcon}
-                onChangeText={setInstitution}
-                value={institution}
-              />
-            </View>
-            <View style={styles.input}>
-              <Input
-                placeholder="Registra una cantidad"
-                keyboardType="numeric"
-                placeholderTextColor="#CCCEC8"
-                autoFocus
-                leftIcon={moneyIcon}
-                onChangeText={setAmount}
-                value={amount}
-              />
-            </View>
-            <TouchableWithoutFeedback onPress={() => setShowPicker(true)}>
-              <View style={styles.input}>
-                <Input
-                  placeholder="Fecha"
-                  keyboardType="numeric"
-                  placeholderTextColor="#CCCEC8"
-                  leftIcon={calendarIcon}
-                  value={dueDate}
-                  disable={true}
-                  editable={false}
+       <View style={styles.backdrop}>
+         <View style={{ height: '60%', backgroundColor: 'white', margin: 20, padding: 15 }}>
+           <View style={{ flex: 1, justifyContent: 'space-evenly' }}>
+             <Text style={styles.title}>Add new payment</Text>
+             <Input
+               placeholder='Institution'
+               label='Institution'
+               rightIcon={institutionIcon}
+               onChangeText={(institution) => setInstitution(institution)}
+             />
+             <Input
+               placeholder='Amount'
+               label='Amount'
+               rightIcon={ moneyIcon }
+               onChangeText={(amount) => setAmount(amount)}/>
+             <TouchableOpacity onPress={() => setShowPicker(true)} activeOpacity={1}>
+               <Input
+                 disabled
+                 label='Due date'
+                 rightIcon={ calendarIcon }
+                 >
+                 {dueDate.toLocaleDateString() || ''}
+                 </Input>
+             </TouchableOpacity>
+             { showPicker && (
+                 <DateTimePicker
+                  value={new Date(dueDate)}
+                  mode='date'
+                  display="default"
+                  onChange={(_, date) => { setDueDate(date) }}
                 />
-                {showPicker && (
-                  <DateTimePicker
-                    value={new Date(dueDate)}
-                    mode="date"
-                    display="default"
-                    onChange={(_, date) => {
-                      setDueDate(date);
-                    }}
-                  />
-                )}
-              </View>
-            </TouchableWithoutFeedback>
-            <Button title="Save" style={styles.button} onPress={() => {}} />
-          </View>
-        </View>
+             )}
+           </View>
+           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
+             <Icon
+               raised
+               type='font-awesome'
+               name='check'
+               color='#1AC80B'
+               onPress={() => savePayment()}
+             />
+             <Icon
+               raised
+               type='font-awesome'
+               name='times'
+               color='#D01919'
+               onPress={() => {props.onPageDismiss()}}
+             />
+           </View>
+         </View>
+       </View>
       </Modal>
     );
 }
@@ -102,6 +103,11 @@ const styles = StyleSheet.create({
   input: {
     marginTop: 30,
     width: '100%'
+  },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 24,
+    textAlign: 'center'
   }
 });
 export default PaymentForm
