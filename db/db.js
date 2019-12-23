@@ -42,7 +42,6 @@ function get(table, criteria, onSuccess, onError) {
 }
 
 function insert(table, data, onSuccess, onError) {
-
   db()
     .transaction(tx => {
       const fields = Object.keys(data).join(', ')
@@ -53,6 +52,13 @@ function insert(table, data, onSuccess, onError) {
 
     }, onError, onSuccess)
 
+}
+
+function drop(table) {
+  db().transaction(tx => { tx.executeSql(`DROP TABLE IF EXISTS ${table};`)},
+   (error) => { console.log(error) },
+   (success) => { console.log(success)}
+  )
 }
 
 function migrate() {
@@ -81,6 +87,7 @@ function migrate() {
 export default {
   get,
   insert,
+  drop,
   init: async () => {
     console.log('[DB_LOG]: Init database')
 

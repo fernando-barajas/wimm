@@ -1,7 +1,4 @@
 import React, { useState } from 'react'
-// import { createPayment } from '../utils/DBAPI'
-// import { scheduleReminder } from '../utils/LocalNotifications'
-
 import PaymentList from '../../components/payments/PaymentList'
 import PaymentForm from '../../components/payments/PaymentForm'
 import AppLayout from '../../components/ui/AppLayout'

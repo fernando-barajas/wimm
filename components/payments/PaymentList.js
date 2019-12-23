@@ -16,7 +16,6 @@ function PaymentList(props) {
       console.error({error})
       console.error({error2})
     })
-
   }, [props.refresh])
 
   return (

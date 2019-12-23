@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
-import { Picker, Text, TouchableOpacity, View, Modal, StyleSheet } from 'react-native'
+import { Text, TouchableOpacity, View, Modal, StyleSheet } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
-import { Icon, Input } from 'react-native-elements'
+import { Button, Icon, Input } from 'react-native-elements'
+import { createPayment } from '../../services/payments'
+import { scheduleReminder } from '../../services/LocalNotifications'
 
 function PaymentForm(props) {
     const [dueDate, setDueDate] = useState(new Date())
@@ -15,11 +17,22 @@ function PaymentForm(props) {
     const calendarIcon = (<Icon name='calendar' type='font-awesome' />)
 
     const savePayment = () => {
-     createPayment(institution, amount, payOut, dueDate).then(() => {
-       scheduleReminder(institution, amount, date).then(() => {
-         this.props.navigation.navigate('Home')
-       } )
-     })
+      const payment = {
+        institution,
+        amount,
+        payOut,
+        dueDate
+      }
+
+      createPayment(payment)
+      scheduleReminder(institution, amount, dueDate).then(() => {
+        props.onPageDismiss()
+      })
+   }
+
+   const closeDatePicker = (date) => {
+     setShowPicker(false)
+     if (date) { setDueDate(date) }
    }
 
     return (
@@ -30,53 +43,44 @@ function PaymentForm(props) {
         visible={props.show}
         onRequestClose={props.onPageDismiss}>
        <View style={styles.backdrop}>
-         <View style={{ height: '60%', backgroundColor: 'white', margin: 20, padding: 15 }}>
+         <View style={styles.container}>
            <View style={{ flex: 1, justifyContent: 'space-evenly' }}>
              <Text style={styles.title}>Add new payment</Text>
              <Input
-               placeholder='Institution'
-               label='Institution'
+               placeholder='Institucion'
+               label='Institucion'
                rightIcon={institutionIcon}
                onChangeText={(institution) => setInstitution(institution)}
              />
              <Input
-               placeholder='Amount'
-               label='Amount'
+               placeholder='Monto'
+               label='Monto'
+               keyboardType='numeric'
                rightIcon={ moneyIcon }
                onChangeText={(amount) => setAmount(amount)}/>
-             <TouchableOpacity onPress={() => setShowPicker(true)} activeOpacity={1}>
+             <TouchableOpacity
+               onPress={() => setShowPicker(true)}
+               activeOpacity={1}>
                <Input
                  disabled
-                 label='Due date'
+                 label='Fecha limite'
                  rightIcon={ calendarIcon }
                  >
-                 {dueDate.toLocaleDateString() || ''}
+                 {dueDate && dueDate.toLocaleDateString() || ''}
                  </Input>
              </TouchableOpacity>
              { showPicker && (
                  <DateTimePicker
-                  value={new Date(dueDate)}
+                  value={dueDate}
                   mode='date'
                   display="default"
-                  onChange={(_, date) => { setDueDate(date) }}
+                  onChange={(_, date) => closeDatePicker(date)}
                 />
              )}
            </View>
-           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
-             <Icon
-               raised
-               type='font-awesome'
-               name='check'
-               color='#1AC80B'
-               onPress={() => savePayment()}
-             />
-             <Icon
-               raised
-               type='font-awesome'
-               name='times'
-               color='#D01919'
-               onPress={() => {props.onPageDismiss()}}
-             />
+           <View style={styles.controls}>
+             <Button title='Guardar' type="outline" onPress={() => savePayment()} />
+             <Button title='Cancelar' type="outline" onPress={() => {props.onPageDismiss()}} />
            </View>
          </View>
        </View>
@@ -86,11 +90,15 @@ function PaymentForm(props) {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#337CA0',
-    paddingVertical: 15,
-    paddingHorizontal: 10
+    backgroundColor: 'white',
+    height: '60%',
+    margin: 20,
+    padding: 15
+  },
+  controls: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly'
   },
   backdrop: {
     backgroundColor: 'rgba(0,0,0,0.5)',

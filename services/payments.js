@@ -1,10 +1,9 @@
 import db from '../db/db'
 
-function createPayment(data) {
+export function createPayment(data) {
   const tableName = db.tables.PAYMENTS
   const paymentDueDate = formatDate(data.dueDate)
   const payment = {
-    payment_type: data.paymentType,
     institution: data.institution,
     amount: data.amount,
     pay_out: data.payOut,
@@ -31,6 +30,11 @@ function getAllPayments(done, error) {
   db.get(tableName, { due_date: { operator: '>=', argument: startDate } }, done, error)
 }
 
+function dropPayments() {
+  const tableName = db.tables.PAYMENTS;
+  db.drop(tableName)
+}
+
 function beginningOfMonth() {
   const today = new Date();
 
@@ -46,5 +50,6 @@ function formatDate(date) {
 
 export default {
   create: createPayment,
-  get: getAllPayments
+  get: getAllPayments,
+  drop: dropPayments,
 }
