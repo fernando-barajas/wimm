@@ -2,10 +2,11 @@ import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 
 export const scheduleReminder = async function(institution, amount, dueDate) {
-  let result = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+  const DAY = 86400000
+  let result = await Permissions.askAsync(Permissions.NOTIFICATIONS)
 
   if (result.status !== 'granted') {
-    console.log('Notification permissions failed');
+    console.log('Notification permissions failed')
     return;
   }
 
@@ -17,7 +18,7 @@ export const scheduleReminder = async function(institution, amount, dueDate) {
 
   // schedule to the day before
   let schedulingOptions = {
-    time: (dueDate).getTime() - 86400000
+    time: (dueDate).getTime() - DAY
   }
 
   Notifications.scheduleLocalNotificationAsync(
