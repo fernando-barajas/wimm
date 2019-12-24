@@ -31,6 +31,7 @@ function AppLayout(props) {
           onPressMain={props.floatPress}
           animated={false}
           showBackground={false}
+          position='center'
         />)
       }
     </View>

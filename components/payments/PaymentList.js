@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import { View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { ScrollView } from 'react-native'
 import { ListItem } from 'react-native-elements'
 
-import PaymentService from '../../services/payments'
+import PaymentService from '../../services/payments';
 
 function PaymentList(props) {
-
   const [payments, setPayments] = useState([])
 
   useEffect(() => {
@@ -17,25 +16,26 @@ function PaymentList(props) {
       console.error({error})
       console.error({error2})
     })
-
   }, [props.refresh])
 
   return (
-    <View>
+    <ScrollView>
       {
         payments.map((item, i) => (
           <ListItem
             key={i}
-            title={item.description}
+            title={item.institution}
+            subtitle={item.due_date}
+            rightTitle={`$ ${item.amount}`}
+            rightSubtitle={`Depositos: $ ${item.pay_out}`}
             leftIcon={{ name: 'monetization-on' }}
             bottomDivider
             chevron
           />
         ))
       }
-    </View>
+    </ScrollView>
   )
-
 }
 
 export default PaymentList

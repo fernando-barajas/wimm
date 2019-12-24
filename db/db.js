@@ -24,9 +24,9 @@ function get(table, criteria, onSuccess, onError) {
       let args = []
       if (Object.keys(criteria).length) {
         where += ' where '
-        Object.keys(criteria).forEach((k, i) => {
-          where += i == 0 ? k + '=? ' : `and ${k}=?`
-          args.push(criteria[k])
+        Object.entries(criteria).forEach(([k, v], i) => {
+          where += i == 0 ? `${k} ${v.operator}?` : `${v.logical_operator} ${k} ${v.operator}?`
+          args.push(v.argument)
         })
       }
       console.log(`[DB_LOG]: Query (${new Date().toLocaleString()}): ${query + where}`)
@@ -42,7 +42,6 @@ function get(table, criteria, onSuccess, onError) {
 }
 
 function insert(table, data, onSuccess, onError) {
-
   db()
     .transaction(tx => {
       const fields = Object.keys(data).join(', ')
@@ -53,6 +52,13 @@ function insert(table, data, onSuccess, onError) {
 
     }, onError, onSuccess)
 
+}
+
+function drop(table) {
+  db().transaction(tx => { tx.executeSql(`DROP TABLE IF EXISTS ${table};`)},
+   (error) => { console.log(error) },
+   (success) => { console.log(success)}
+  )
 }
 
 function migrate() {
@@ -81,6 +87,7 @@ function migrate() {
 export default {
   get,
   insert,
+  drop,
   init: async () => {
     console.log('[DB_LOG]: Init database')
 
