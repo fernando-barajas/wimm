@@ -3,78 +3,82 @@ import { Platform } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 
-import TabBarIcon from '../components/TabBarIcon';
+import TabBarIcon from '../components/ui/TabBarIcon';
+
 import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import ExpensesScreen from '../screens/Expenses/ExpensesScreen';
+import SettingsScreen from '../screens/Settings/SettingsScreen';
+import PaymentsScreen from '../screens/Payments/PaymentScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
-  default: {},
+  default: {
+    mode: 'modal',
+    defaultNavigationOptions: {
+      header: null
+    }
+  },
 });
 
-const HomeStack = createStackNavigator(
-  {
-    Home: HomeScreen,
-  },
-  config
-);
+
+// Home Tab Router
+const HomeStack = createStackNavigator({ Home: HomeScreen }, config);
 
 HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+  tabBarLabel: 'Inicio',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
+      name="md-apps"
     />
   ),
 };
-
 HomeStack.path = '';
 
-const LinksStack = createStackNavigator(
-  {
-    Links: LinksScreen,
-  },
-  config
-);
+// Payments Tab Router
+const PaymentsStack = createStackNavigator( { Payments: PaymentsScreen }, config);
 
-LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
+PaymentsStack.navigationOptions = {
+  tabBarLabel: 'Pagos',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'} />
+    <TabBarIcon focused={focused} name="md-card" />
   ),
 };
+PaymentsStack.path = ''
 
-LinksStack.path = '';
-
-const SettingsStack = createStackNavigator(
+// Expense Tab Router
+const ExpensesStack = createStackNavigator(
   {
-    Settings: SettingsScreen,
+    Expenses: ExpensesScreen
   },
   config
 );
 
+ExpensesStack.navigationOptions = {
+  tabBarLabel: 'Gastos',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon focused={focused} name="md-cart" />
+  ),
+};
+ExpensesStack.path = '';
+
+// Settings Tab Router
+const SettingsStack = createStackNavigator( { Settings: SettingsScreen }, config);
+
 SettingsStack.navigationOptions = {
-  tabBarLabel: 'Settings',
+  tabBarLabel: 'Config.',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'} />
   ),
 };
-
 SettingsStack.path = '';
-
 
 const tabNavigator = createBottomTabNavigator({
   HomeStack,
-  LinksStack,
+  PaymentsStack,
+  ExpensesStack,
   SettingsStack,
 });
-
 tabNavigator.path = '';
 
 export default tabNavigator;
