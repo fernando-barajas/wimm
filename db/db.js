@@ -16,7 +16,6 @@ function db() {
 }
 
 function get(table, criteria, onSuccess, onError) {
-
   db()
     .transaction(tx => {
       let query = `select * from ${table}`

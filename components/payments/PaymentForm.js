@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Text, TouchableOpacity, View, Modal, StyleSheet } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
-import { Button, Icon, Input } from 'react-native-elements'
-import { createPayment } from '../../services/payments'
+import { Button, CheckBox, Icon, Input } from 'react-native-elements'
+import { createPayment, createRecurringPayment } from '../../services/payments'
 import { scheduleReminder } from '../../services/LocalNotifications'
 
 function PaymentForm(props) {
@@ -11,6 +11,7 @@ function PaymentForm(props) {
     const [amount, setAmount] = useState(0)
     const [payOut, setPayOut] = useState(0)
     const [showPicker, setShowPicker] = useState(false)
+    const [recurring, setRecurring] = useState(false)
 
     const institutionIcon = (<Icon name='credit-card' type='font-awesome' />)
     const moneyIcon = (<Icon name='money' type='font-awesome' />)
@@ -21,10 +22,13 @@ function PaymentForm(props) {
         institution,
         amount,
         payOut,
-        dueDate
+        dueDate,
       }
 
       createPayment(payment)
+
+      if(recurring) { createRecurringPayment(payment) }
+
       scheduleReminder(institution, amount, dueDate).then(() => {
         props.onPageDismiss()
       })
@@ -77,6 +81,9 @@ function PaymentForm(props) {
                   onChange={(_, date) => closeDatePicker(date)}
                 />
              )}
+           </View>
+           <View>
+             <CheckBox title="Pago recurrente?" onPress={() => setRecurring(!recurring)} checked={recurring} />
            </View>
            <View style={styles.controls}>
              <Button title='Guardar' type="outline" onPress={() => savePayment()} />

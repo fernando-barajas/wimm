@@ -28,5 +28,20 @@
       "due_date date not null",
       "created_at timestamp default current_timestamp not null"
     ]
+  },
+  "recurring_payments": {
+    "fields": [
+      "institution",
+      "amount",
+      "billing_cycle_start_day",
+      "created_at"
+    ],
+    "definitions": [
+      "id integer primary key not null",
+      "institution varchar not null",
+      "amount numeric not null",
+      "billing_cycle_start_day numeric not null",
+      "created_at timestamp default current_timestamp not null"
+    ]
   }
 }

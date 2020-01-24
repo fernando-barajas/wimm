@@ -22,6 +22,27 @@ export function createPayment(data) {
   })
 }
 
+export function createRecurringPayment(data) {
+  const tableName = db.tables.RECURRING_PAYMENTS
+  const payment = {
+    institution: data.institution,
+    amount: data.amount,
+    billing_cycle_start_day: data.dueDate.getDate()
+  }
+
+  db.insert(tableName, payment, (tx, success) => {
+    console.log('success')
+    console.log(success)
+    console.log(tx)
+
+  }, (tx, error) => {
+    console.log(tx)
+    console.log(error)
+    console.log('error')
+  })
+
+}
+
 function getAllPayments(done, error) {
 
   const tableName = db.tables.PAYMENTS
